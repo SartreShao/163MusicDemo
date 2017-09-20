@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //call by MyHandler.handleMessage(Message msg)
     private static void setBitmapToUI(Message msg, MainActivity mainActivity) {
         switch (msg.what) {
             case SET_BACKGROUND_IMAGE:
@@ -84,20 +85,21 @@ public class MainActivity extends AppCompatActivity {
         vinylView = (VinylView) findViewById(R.id.my_view);
         playButton = (Button) findViewById(R.id.bt_play);
 
-        //设置图标URL
-        imageUrl = "http://images2015.cnblogs.com/blog/852227/201608/852227-20160803202633403-940757137.jpg";
-        setBackGroundImage(imageUrl);
-        setAlubmCoverImage(imageUrl);
-
+        //点击事件
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 vinylView.clickPlayButton();
             }
         });
+
+        //设置图标URL
+        imageUrl = "http://images2015.cnblogs.com/blog/852227/201608/852227-20160803202633403-940757137.jpg";
+        setBackGroundImage(imageUrl);
+        setAlubmCoverImage(imageUrl);
     }
 
-    //if success, call MyHandler's handleMessage, pass Bitmap in message.obj
+    //if success, call MyHandler's handleMessage(Message msg), pass Bitmap in msg.obj
     private void setBackGroundImage(final String imageUrl) {
         if (imageUrl != null && imageUrl.length() != 0) {
             new Thread(new Runnable() {
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //if success, call MyHandler's handleMessage, pass Bitmap in message.obj
+    //if success, call MyHandler's handleMessage(Message msg), pass Bitmap in msg.obj
     private void setAlubmCoverImage(final String imageUrl) {
         if (imageUrl != null && imageUrl.length() != 0) {
             new Thread(new Runnable() {
