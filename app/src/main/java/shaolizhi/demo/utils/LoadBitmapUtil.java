@@ -27,8 +27,7 @@ public class LoadBitmapUtil {
         conn.setRequestMethod("GET");
         if (conn.getResponseCode() == 200) {
             InputStream inputStream = conn.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            return bitmap;
+            return BitmapFactory.decodeStream(inputStream);
         }
         return null;
     }
