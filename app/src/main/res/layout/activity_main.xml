@@ -11,38 +11,19 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <ImageView
-        android:id="@+id/iv_alubmCoverBack"
-        android:layout_width="290dp"
-        android:layout_height="290dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/ic_disc"
-        android:scaleType="centerCrop" />
-
-    <ImageView
-        android:id="@+id/iv_alubmCover"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:scaleType="centerCrop" />
-
+    <shaolizhi.demo.VinylView
+        android:id="@+id/my_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
 
     <Button
-        android:id="@+id/bt_start"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/bt_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"
-        />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/start_stop" />
 
-    <Button
-        android:id="@+id/bt_Stop"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop"
-        />
 </RelativeLayout>

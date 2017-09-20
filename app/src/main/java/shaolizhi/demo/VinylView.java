@@ -12,35 +12,60 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 /**
- * 由邵励治于2017/9/20创造.
+ * two public method:
+ * (1)void setAlubmCoverImage(Bitmap bitmap) - 设置专辑封面图片
+ * (2)void clickPlayButton() - 点击播放，再次点击暂停
+ *
+ * 注：
+ * Vinyl - 黑胶唱片
  */
+public class VinylView extends RelativeLayout {
 
-public class MyView extends RelativeLayout {
-
-    LayoutInflater layoutInflater;
-
+    //唱片外边的黑边,加载图片资源drawable/ic_disc
     ImageView alubmCoverBack;
 
+    //唱片中间的专辑图片
     ImageView alubmCover;
 
     ObjectAnimator alubmCoverAnimator;
 
     ObjectAnimator alubmCoverBackAnimator;
 
-    public MyView(Context context) {
+    boolean isPlay;
+
+    public VinylView(Context context) {
         this(context, null);
     }
 
-    public MyView(Context context, AttributeSet attrs) {
+    public VinylView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        layoutInflater = LayoutInflater.from(context);
-        layoutInflater.inflate(R.layout.my_view, this);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        layoutInflater.inflate(R.layout.view_vinyl, this);
 
-        alubmCover = (ImageView) findViewById(R.id.iv_alubmCover);
-        alubmCoverBack = (ImageView) findViewById(R.id.iv_alubmCoverBack);
+        alubmCover = findViewById(R.id.iv_alubmCover);
+        alubmCoverBack = findViewById(R.id.iv_alubmCoverBack);
 
         alubmCoverAnimator = getDiscObjectAnimator(alubmCover);
         alubmCoverBackAnimator = getDiscObjectAnimator(alubmCoverBack);
+
+        isPlay = false;
+    }
+
+    //set Bitmap on ImageView-alubmCover
+    public void setAlubmCoverImage(Bitmap bitmap) {
+        alubmCover.setImageBitmap(bitmap);
+        postInvalidate();
+    }
+
+    //call startRotating() or stopRotating()
+    public void clickPlayButton() {
+        if (isPlay) {
+            stopRotating();
+            isPlay = false;
+        } else {
+            startRotating();
+            isPlay = true;
+        }
     }
 
     private ObjectAnimator getDiscObjectAnimator(ImageView imageView) {
@@ -52,12 +77,7 @@ public class MyView extends RelativeLayout {
         return objectAnimator;
     }
 
-    public void setAlubmCoverImage(Bitmap bitmap) {
-        alubmCover.setImageBitmap(bitmap);
-        postInvalidate();
-    }
-
-    public void startRotating(){
+    private void startRotating() {
         if (alubmCoverAnimator.isPaused()) {
             alubmCoverAnimator.resume();
             alubmCoverBackAnimator.resume();
@@ -67,7 +87,7 @@ public class MyView extends RelativeLayout {
         }
     }
 
-    public void stopRotating(){
+    private void stopRotating() {
         alubmCoverAnimator.pause();
         alubmCoverBackAnimator.pause();
     }

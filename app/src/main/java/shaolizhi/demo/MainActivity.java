@@ -1,7 +1,5 @@
 package shaolizhi.demo;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +7,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -24,21 +21,19 @@ public class MainActivity extends AppCompatActivity {
 
     final String TAG = getClass().getSimpleName();
 
+    //图片的URL,更改后调用setBackGroundImage与setAlubmCoverImage应用更改
     String imageUrl;
 
+    //高斯模糊的背景
     ImageView backGround;
 
-    ImageView alubmCoverBack;
+    //自定义播放转盘
+    VinylView vinylView;
 
-    ImageView alubmCover;
+    //转盘的播放按钮
+    Button playButton;
 
-    ObjectAnimator alubmCoverAnimator;
-
-    ObjectAnimator alubmCoverBackAnimator;
-
-    Button startButton;
-
-    Button stopButton;
+    private final MyHandler myHandler = new MyHandler(this);
 
     private static final int SET_BACKGROUND_IMAGE = 0x00000001;
 
@@ -56,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
             MainActivity mainActivity = mainActivityWeakReference.get();
             if (mainActivity != null) {
-                setBitmapToImageView(msg, mainActivity);
+                setBitmapToUI(msg, mainActivity);
             }
         }
     }
 
-    private static void setBitmapToImageView(Message msg, MainActivity mainActivity) {
+    private static void setBitmapToUI(Message msg, MainActivity mainActivity) {
         switch (msg.what) {
             case SET_BACKGROUND_IMAGE:
                 if (msg.obj instanceof Bitmap) {
@@ -72,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             case SET_ALUBCOVER_IMAGE:
                 if (msg.obj instanceof Bitmap) {
                     Bitmap bitmap = (Bitmap) msg.obj;
-                    mainActivity.alubmCover.setImageBitmap(bitmap);
+                    mainActivity.vinylView.setAlubmCoverImage(bitmap);
                 }
                 break;
             default:
@@ -80,48 +75,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private final MyHandler myHandler = new MyHandler(this);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //控件绑定
         backGround = (ImageView) findViewById(R.id.iv_background);
-        alubmCover = (ImageView) findViewById(R.id.iv_alubmCover);
-        alubmCoverBack = (ImageView) findViewById(R.id.iv_alubmCoverBack);
-        startButton = (Button) findViewById(R.id.bt_start);
-        stopButton = (Button) findViewById(R.id.bt_Stop);
+        vinylView = (VinylView) findViewById(R.id.my_view);
+        playButton = (Button) findViewById(R.id.bt_play);
 
+        //设置图标URL
         imageUrl = "http://images2015.cnblogs.com/blog/852227/201608/852227-20160803202633403-940757137.jpg";
         setBackGroundImage(imageUrl);
         setAlubmCoverImage(imageUrl);
 
-        alubmCoverAnimator = getDiscObjectAnimator(alubmCover);
-        alubmCoverBackAnimator = getDiscObjectAnimator(alubmCoverBack);
-
-        startButton.setOnClickListener(new View.OnClickListener() {
+        playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (alubmCoverAnimator.isPaused()) {
-                    alubmCoverAnimator.resume();
-                    alubmCoverBackAnimator.resume();
-                } else {
-                    alubmCoverAnimator.start();
-                    alubmCoverBackAnimator.start();
-                }
-            }
-        });
-
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alubmCoverAnimator.pause();
-                alubmCoverBackAnimator.pause();
+                vinylView.clickPlayButton();
             }
         });
     }
 
-    public void setBackGroundImage(final String imageUrl) {
+    //if success, call MyHandler's handleMessage, pass Bitmap in message.obj
+    private void setBackGroundImage(final String imageUrl) {
         if (imageUrl != null && imageUrl.length() != 0) {
             new Thread(new Runnable() {
                 @Override
@@ -140,7 +117,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setAlubmCoverImage(final String imageUrl) {
+    //if success, call MyHandler's handleMessage, pass Bitmap in message.obj
+    private void setAlubmCoverImage(final String imageUrl) {
         if (imageUrl != null && imageUrl.length() != 0) {
             new Thread(new Runnable() {
                 @Override
@@ -163,12 +141,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private ObjectAnimator getDiscObjectAnimator(ImageView imageView) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(imageView, View.ROTATION, 0, 360);
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        objectAnimator.setDuration(20 * 1000);
-        objectAnimator.setInterpolator(new LinearInterpolator());
-
-        return objectAnimator;
-    }
 }
