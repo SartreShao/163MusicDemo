@@ -124,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
+                        //关键代码：将传入URL对应图片进行高斯模糊处理后返回
                         Bitmap bitmap = LoadBitmapUtil.getBitmap(imageUrl);
+
                         if (bitmap == null) {
                             return;
                         }
